@@ -100,7 +100,7 @@
 }
 
 .characters-container-user-chars{
-  height: 40px;
+  min-height: 40px;
   padding: 10px;
   overflow-wrap: break-word;
   background-color: aliceblue;
