@@ -16,15 +16,24 @@ export function Generator({ userChars }) {
 
   function handlePwdLength(e) {
     e.preventDefault();
-    if (!e.target.value || e.target.value > MAX) {
-      setPwdLength(MIN);
-      return;
-    }
     setPwdLength(e.target.value);
   }
 
   function uniqueGenerate(e) {
     e.preventDefault();
+    
+    if (!isFinite(pwdLength)) {
+      setErrMessage('Something wrong with your password length')
+      return;
+    }
+    if (pwdLength < MIN) {
+      setErrMessage('Password length is too short')
+      return;
+    }
+    if (pwdLength > MAX) {
+      setErrMessage('Password length is too long')
+      return;
+    }
     let newPwd = [];
     while (newPwd.length < pwdLength && userChars.length >= pwdLength) {
       const number = Math.floor((Math.random() * 10 * userChars.length) / 6);
@@ -37,6 +46,18 @@ export function Generator({ userChars }) {
 
   function generate(e) {
     e.preventDefault();
+    if (!isFinite(pwdLength)) {
+      setErrMessage('Something wrong with your password length')
+      return;
+    }
+    if (pwdLength < MIN) {
+      setErrMessage('Password length is too short')
+      return;
+    }
+    if (pwdLength > MAX) {
+      setErrMessage('Password length is too long')
+      return;
+    }
     let newPwd = [];
     while (newPwd.length < pwdLength && userChars.length >= pwdLength) {
       const number = Math.floor((Math.random() * 10 * userChars.length) / 6);
@@ -49,7 +70,7 @@ export function Generator({ userChars }) {
 
   function pwdCopy(e) {
     e.preventDefault();
-    navigator.clipboard.writeText(pwd)
+    navigator.clipboard.writeText(pwd);
   }
 
   return (
@@ -57,20 +78,25 @@ export function Generator({ userChars }) {
       <div className="generator-container-err">{errMessage}</div>
       <div className="generator-container-content">
         <div className="generator-container-content-pwd">
-          <input
-            type="number"
-            value={pwdLength}
-            min={MIN}
-            max={MAX}
-            onInput={handlePwdLength}
-            className="generator-container-content-pwd-length"
-          />
-          <div className="generator-container-content-pwd-generated-password">{pwd}</div>
+          <input className="generator-container-content-pwd-length" type="text" inputmode="numeric" pattern="[0-9]*" value={pwdLength} onInput={handlePwdLength}></input>
+          <div className="generator-container-content-pwd-generated-password">
+            {pwd}
+          </div>
           <button onClick={pwdCopy}>Copy</button>
         </div>
         <div className="generator-container-content-generate">
-          <button className="generator-container-content-generate-btn" onClick={uniqueGenerate}>Unique Generate</button>
-          <button className="generator-container-content-generate-btn" onClick={generate}>Generate</button>
+          <button
+            className="generator-container-content-generate-btn"
+            onClick={uniqueGenerate}
+          >
+            Unique Generate
+          </button>
+          <button
+            className="generator-container-content-generate-btn"
+            onClick={generate}
+          >
+            Generate
+          </button>
         </div>
       </div>
     </div>
