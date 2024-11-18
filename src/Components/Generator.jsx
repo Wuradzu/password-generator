@@ -9,9 +9,19 @@ export function Generator({ userChars }) {
   const [errMessage, setErrMessage] = useState("");
 
   useEffect(() => {
-    userChars.length < pwdLength
-      ? setErrMessage(`You use too less chars, must be ${pwdLength} or more`)
-      : setErrMessage("");
+    setErrMessage("")
+    if(userChars.length < pwdLength){
+      setErrMessage(`You use too less chars, must be ${pwdLength} or more`)
+    }
+    if (!isFinite(pwdLength)) {
+      setErrMessage("Something wrong with your password length");
+    }
+    if (pwdLength < MIN) {
+      setErrMessage("Password length is too short");
+    }
+    if (pwdLength > MAX) {
+      setErrMessage("Password length is too long");
+    }
   }, [pwdLength, userChars]);
 
   function handlePwdLength(e) {
@@ -21,19 +31,6 @@ export function Generator({ userChars }) {
 
   function uniqueGenerate(e) {
     e.preventDefault();
-    
-    if (!isFinite(pwdLength)) {
-      setErrMessage('Something wrong with your password length')
-      return;
-    }
-    if (pwdLength < MIN) {
-      setErrMessage('Password length is too short')
-      return;
-    }
-    if (pwdLength > MAX) {
-      setErrMessage('Password length is too long')
-      return;
-    }
     let newPwd = [];
     while (newPwd.length < pwdLength && userChars.length >= pwdLength) {
       const number = Math.floor((Math.random() * 10 * userChars.length) / 6);
@@ -46,18 +43,6 @@ export function Generator({ userChars }) {
 
   function generate(e) {
     e.preventDefault();
-    if (!isFinite(pwdLength)) {
-      setErrMessage('Something wrong with your password length')
-      return;
-    }
-    if (pwdLength < MIN) {
-      setErrMessage('Password length is too short')
-      return;
-    }
-    if (pwdLength > MAX) {
-      setErrMessage('Password length is too long')
-      return;
-    }
     let newPwd = [];
     while (newPwd.length < pwdLength && userChars.length >= pwdLength) {
       const number = Math.floor((Math.random() * 10 * userChars.length) / 6);
@@ -78,7 +63,14 @@ export function Generator({ userChars }) {
       <div className="generator-container-err">{errMessage}</div>
       <div className="generator-container-content">
         <div className="generator-container-content-pwd">
-          <input className="generator-container-content-pwd-length" type="text" inputmode="numeric" pattern="[0-9]*" value={pwdLength} onInput={handlePwdLength}></input>
+          <input
+            className="generator-container-content-pwd-length"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            value={pwdLength}
+            onInput={handlePwdLength}
+          ></input>
           <div className="generator-container-content-pwd-generated-password">
             {pwd}
           </div>
@@ -88,12 +80,14 @@ export function Generator({ userChars }) {
           <button
             className="generator-container-content-generate-btn"
             onClick={uniqueGenerate}
+            disabled={errMessage}
           >
             Unique Generate
           </button>
           <button
             className="generator-container-content-generate-btn"
             onClick={generate}
+            disabled={errMessage}
           >
             Generate
           </button>
